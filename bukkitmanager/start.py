@@ -1,5 +1,5 @@
 import optparse
-import subprocess
+import os
 
 def verbose(string):
     global options
@@ -42,7 +42,13 @@ def start(args):
     max_memory = 512
     file_n = args[0]
     verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mdS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    subprocess.Popen("/usr/bin/screen -mdS %s java -Xms%d -Xmx%d -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    subprocess.Popen("/usr/bin/screen -Xr %s multiuser on" % options.screen_name, stdout=subprocess.STDOUT)
-    subprocess.Popen("/usr/bin/screen -Xr minecraft/%s acladd dhatch" % options.screen_name, stdout=subprocess.STDOUT)
+    os.system("screen -mdS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
+    os.system("screen -r %s -X multiuser on" % options.screen_name)
+    #add users to screen
+    #eventually users to add should be read from config
+    users = ['dhatch', 'pconzone', 'beyring']
+    for u in users:
+        os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
+    print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
+    + "\nConnect with %spython manage.py connect" % bcolors.OKBLUE
     
