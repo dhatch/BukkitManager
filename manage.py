@@ -1,0 +1,3 @@
+import bukkitmanager
+
+bukkitmanager.deploy()
