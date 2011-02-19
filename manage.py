@@ -1,6 +1,8 @@
 import bukkitmanager
 import optparse
 version = '0.1'
+possible_commands = ['download', 'start', 'stop', 'restart', 'connect', 'deploy']
+
 def verbose(string):
     global options
     if options.verbose: print string
@@ -27,9 +29,21 @@ parser = optparse.OptionParser(\
  usage=bcolors.OKGREEN+"%prog"+bcolors.ENDC+" [options] [download | start | stop | restart | connect | deploy]",\
  description = 'Used to manage bukkit server. Relies on bukkitmanage.conf file for some settings.',\
  version=version)
+parser.disable_interspersed_args()3
 parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
 (options, args) = parser.parse_args()
 verbose("Args are: %s " % args)
-if len(args) != 1:
+#check to make sure we have 1 argument or more
+if len(args) < 1:
     print bcolors.FAIL+"Error:"+bcolors.ENDC+" Please supply a command argument."
     parser.print_help()
+    exit()
+
+verbose("Correct number of args supplied")
+command = args[0]
+if not command in possible_commands:
+    print bcolors.FAIL+"Error:"+bcolors.ENDC+" Incorrect command argument."
+    parser.print_help()
+    exit()
+
+getattr(getattr(bukkitmanager,command), command)(args[1:])
