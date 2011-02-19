@@ -29,7 +29,7 @@ parser = optparse.OptionParser(\
  usage=bcolors.OKGREEN+"%prog"+bcolors.ENDC+" [options] [download | start | stop | restart | connect | deploy]",\
  description = 'Used to manage bukkit server. Relies on bukkitmanage.conf file for some settings.',\
  version=version)
-parser.disable_interspersed_args()3
+parser.disable_interspersed_args()
 parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
 (options, args) = parser.parse_args()
 verbose("Args are: %s " % args)
