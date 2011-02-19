@@ -31,6 +31,7 @@ def start(args):
     #later replace default value here with config
     parser.add_option('-s', '--screen-name', action='store', help='the name of the screen session', default='minecraft-tester')
     (options, args) = parser.parse_args(args)
+    verbose("good mornin")
     verbose("Args are: %s " % args)
     if len(args) < 1:
         print bcolors.FAIL+"Error:"+bcolors.ENDC+" Please supply a command argument."
@@ -39,7 +40,11 @@ def start(args):
     ##READY TO START SERVER
     #defaults here should depend on config, eventually add in setting based on input
     min_memory = 512
+    try:
+        min_memory = args[1]
     max_memory = 512
+    try:
+        max_memory = args[2]
     file_n = args[0]
     verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mdS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
     os.system("screen -mdS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
@@ -51,4 +56,4 @@ def start(args):
         os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
     print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
     + "\nConnect with %spython manage.py connect" % bcolors.OKBLUE
-    
+    #write screenname with pid out to bukkitmanger.conf
