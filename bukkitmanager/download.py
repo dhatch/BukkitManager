@@ -22,7 +22,7 @@ def download(args):
         print "Error: Must supply a numrical value for VERSION_NUMBER!"
         parser.print_help()
         exit()
-    f = open("/".join(sys.path[0].split("/")[0:-1])+"/craftbukkit-%d.jar" % download_number, "w")
+    f = open(sys.path[0]+"/craftbukkit-%d.jar" % download_number, "w")
     f.write(urllib2.urlopen("http://bamboo.lukegb.com/browse/BUKKIT-CRAFTBUKKIT-%d/artifact/JOB1/CraftBukkit-JAR/craftbukkit-0.0.1-SNAPSHOT.jar" % download_number,None).read())
     f.close()
 
