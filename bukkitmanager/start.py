@@ -1,5 +1,6 @@
 import optparse
 import os
+import subproccess
 
 def verbose(string):
     global options
@@ -31,7 +32,6 @@ def start(args):
     #later replace default value here with config
     parser.add_option('-s', '--screen-name', action='store', help='the name of the screen session', default='minecraft-tester')
     (options, args) = parser.parse_args(args)
-    verbose("good mornin")
     verbose("Args are: %s " % args)
     if len(args) < 1:
         print bcolors.FAIL+"Error:"+bcolors.ENDC+" Please supply a command argument."
@@ -39,15 +39,43 @@ def start(args):
         exit()
     ##READY TO START SERVER
     #defaults here should depend on config, eventually add in setting based on input
-    min_memory = 512
     try:
         min_memory = args[1]
-    max_memory = 512
+    except IndexError:
+        min_memory = 512
     try:
         max_memory = args[2]
+    except IndexError:
+        max_memory = 512
     file_n = args[0]
-    verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mdS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    os.system("screen -mdS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
+    verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
+    screen_start = subproccess.popen("screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n),\
+     stdout=subprocess.PIPE,\
+     stdin=subproccess.PIPE)
+    #begin processing the output from the screen session
+    stopping = False
+    while True:
+        #read lines
+        line = screen_start.stdout.readline()
+        if line.find("[WARNING]") != -1:
+            print bcolors.WARNING+line
+            if line == '**** FAILED TO BIND TO PORT!':
+                print bcolors.FAIL+"Cancelling start attempt...\nA server is already using the configured port. Perhaps try manage.py stop"
+                screen_start.communicate("stop\n")
+                stopping = True
+            
+        if line.find("[SEVERE]") != -1:
+            print bcolors.FAIL+line
+            print bcolors.FAIL+"Cancelling start attempt..."
+            screen_start.communicate("stop\n")
+            stopping = True
+        if line.find("Preparing level") != -1:
+            print bcolors.OKBLUE+"Server starting... Please wait..."
+        if line.find("Done") != -1:
+            print bcolors.OKGREEN+"Server up and running. Setting up screen..."
+        
+        
+             
     os.system("screen -r %s -X multiuser on" % options.screen_name)
     #add users to screen
     #eventually users to add should be read from config
