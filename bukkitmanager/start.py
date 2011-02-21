@@ -76,12 +76,12 @@ def start(args):
         
         
              
-    os.system("screen -r %s -X multiuser on" % options.screen_name)
+    #os.system("screen -r %s -X multiuser on" % options.screen_name)
     #add users to screen
     #eventually users to add should be read from config
-    users = ['dhatch', 'pconzone', 'beyring']
-    for u in users:
-        os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
+    #users = ['dhatch', 'pconzone', 'beyring']
+    #for u in users:
+    #    os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
     print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
-    + "\nConnect with %spython manage.py connect" % bcolors.OKBLUE
+    + "\nConnect with %s manage.py connect" % bcolors.OKBLUE
     #write screenname with pid out to bukkitmanger.conf
