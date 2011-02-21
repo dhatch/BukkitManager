@@ -1,6 +1,6 @@
 import optparse
 import os
-import subproccess
+import subprocess
 
 def verbose(string):
     global options
@@ -49,7 +49,7 @@ def start(args):
         max_memory = 512
     file_n = args[0]
     verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    screen_start = subproccess.popen("screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n),\
+    screen_start = subprocess.popen("screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n),\
      stdout=subprocess.PIPE,\
      stdin=subproccess.PIPE)
     #begin processing the output from the screen session
