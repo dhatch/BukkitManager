@@ -60,7 +60,7 @@ def start(args):
     poll.register(screen_start.stdout, select.POLLIN)
     while True:
         #read lines
-        line = None
+        line = ""
         if poll.poll(0.25):
             line = screen_start.stdout.readline()
         verbose("Line: %s" % line)
