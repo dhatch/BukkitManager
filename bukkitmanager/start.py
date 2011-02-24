@@ -27,7 +27,7 @@ def start(args):
     #begin by parsing command line arguments
     #setup the fuckin parser
     parser = optparse.OptionParser(\
-     usage=bcolors.OKGREEN+"%prog"+bcolors.ENDC+" [options] FILENAME [min_memory (MB)] [max_memory (MB)]")
+     usage=bcolors.OKGREEN+"%prog start"+bcolors.ENDC+" [options] FILENAME [min_memory (MB)] [max_memory (MB)]")
     parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
     #later replace default value here with config
     parser.add_option('-s', '--screen-name', action='store', help='the name of the screen session', default='minecraft_tester')
@@ -61,7 +61,7 @@ def start(args):
     while True:
         #read lines
         line = None
-        if poll.poll():
+        if poll.poll(0.25):
             line = screen_start.stdout.readline()
         verbose("Line: %s" % line)
         if line.find("[WARNING]") != -1:
