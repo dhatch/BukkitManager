@@ -49,7 +49,7 @@ def start(args):
         max_memory = 512
     file_n = args[0]
     verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    screen_start = subprocess.Popen((["screen", "-m","-S",options.screen_name, "java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (min_memory, max_memory, file_n)]),
+    screen_start = subprocess.Popen((["screen", "-m","-S",options.screen_name, "java","-Xms%dM" % min_memory,"-Xmx%dM" % max_memory,"-Xincgc","-jar %s" % file_n,"nogui"]),
     stdout=subprocess.PIPE,\
     stdin=subprocess.PIPE)
 
@@ -58,23 +58,21 @@ def start(args):
     stopping = False
     poll = select.poll()
     poll.register(screen_start.stdout, select.POLLIN)
-    while True:
+    while screen_start.poll() is None:
         #read lines
-        line = ""
-        if poll.poll(0.25):
-            line = screen_start.stdout.readline()
+        line = screen_start.stdout.readline()
         verbose("Line: %s" % line)
         if line.find("[WARNING]") != -1:
             print bcolors.WARNING+line
             if line == '**** FAILED TO BIND TO PORT!':
                 print bcolors.FAIL+"Cancelling start attempt...\nA server is already using the configured port. Perhaps try manage.py stop"
-                screen_start.communicate("stop\n")
+                screen_start.stdin.write("stop\n")
                 stopping = True
             
         if line.find("[SEVERE]") != -1:
             print bcolors.FAIL+line
             print bcolors.FAIL+"Cancelling start attempt..."
-            screen_start.communicate("stop\n")
+            screen_start.stdin.write("stop\n")
             stopping = True
         if line.find("Preparing level") != -1:
             print bcolors.OKBLUE+"Server starting... Please wait..."
@@ -90,5 +88,5 @@ def start(args):
     #for u in users:
     #    os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
     print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
-    + "\nConnect with %s manage.py connect" % bcolors.OKBLUE
+    + "\nConnect with %smanage.py connect" % bcolors.OKBLUE
     #write screenname with pid out to bukkitmanger.conf
