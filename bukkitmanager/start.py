@@ -1,6 +1,6 @@
 import optparse
 import os
-import subprocess
+import subprocess, select
 
 def verbose(string):
     global options
@@ -30,7 +30,7 @@ def start(args):
      usage=bcolors.OKGREEN+"%prog"+bcolors.ENDC+" [options] FILENAME [min_memory (MB)] [max_memory (MB)]")
     parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
     #later replace default value here with config
-    parser.add_option('-s', '--screen-name', action='store', help='the name of the screen session', default='minecraft-tester')
+    parser.add_option('-s', '--screen-name', action='store', help='the name of the screen session', default='minecraft_tester')
     (options, args) = parser.parse_args(args)
     verbose("Args are: %s " % args)
     if len(args) < 1:
@@ -49,14 +49,21 @@ def start(args):
         max_memory = 512
     file_n = args[0]
     verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    screen_start = subprocess.Popen("screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n),\
-     stdout=subprocess.PIPE,\
-     stdin=subproccess.PIPE)
+    screen_start = subprocess.Popen((["screen", "-m","-S",options.screen_name, "java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (min_memory, max_memory, file_n)]),
+    stdout=subprocess.PIPE,\
+    stdin=subprocess.PIPE)
+
+    verbose("process started")
     #begin processing the output from the screen session
     stopping = False
+    poll = select.poll()
+    poll.register(screen_start.stdout, select.POLLIN)
     while True:
         #read lines
-        line = screen_start.stdout.readline()
+        line = None
+        if poll.poll():
+            line = screen_start.stdout.readline()
+        verbose("Line: %s" % line)
         if line.find("[WARNING]") != -1:
             print bcolors.WARNING+line
             if line == '**** FAILED TO BIND TO PORT!':
