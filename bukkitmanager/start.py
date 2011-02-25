@@ -71,30 +71,30 @@ def start(args):
         try: 
             i = screen_child.expect(["[WARNING]", "[SEVERE]","[INFO]"])
         except pexpect.EOF, e:
-            print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e
+            print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e+bcolors.ENDC
             break
         except pexpect.TIMEOUT:
             pass
             verbose("Read timeout")
-        verbose("Matched: %d, %s" % (i, screen_child.after))
+        verbose("Matched: %d, %s, %s" % (i, screen_child.after, screen_child.before))
         if i == 0:
-            print bcolors.WARNING+screen_child.after
+            print bcolors.WARNING+screen_child.after+bcolors.ENDC
             if screen_child.after.find("FAILED TO BIND TO PORT") != -1:
                 print bcolors.FAIL+"Cancelling start attempt...\nA server is already using the configured port. Perhaps try "+bcolors.OKBLUE\
                 +"manage.py stop "+bcolors.ENDC+"or "+bcolors.OKBLUE+"manage.py restart"
                 stop_server()
                 break
         if i == 1:
-            print bcolors.FAIL+screen_child.after
-            print bcolors.FAIL+"Cancelling start attempt..."
+            print bcolors.FAIL+screen_child.after+bcolors.ENDC
+            print bcolors.FAIL+"Cancelling start attempt..."+bcolors.ENDC
             stop_server()
             break
         if i == 2:
             verbose(bcolors.OKBLUE+screen_child.after)
             if screen_child.after.find("Preparing level") != -1:
-                print bcolors.OKGREEN+"Server starting... Please wait..."
+                print bcolors.OKGREEN+"Server starting... Please wait..."+bcolors.ENDC
             if screen_child.after.find("Done"):
-                print bcolors.OKGREEN+"Server up and running. Setting up screen..."             
+                print bcolors.OKGREEN+"Server up and running. Setting up screen..."+bcolors.ENDC            
                 #os.system("screen -r %s -X multiuser on" % options.screen_name)
                 #add users to screen
                 #eventually users to add should be read from config
@@ -102,7 +102,7 @@ def start(args):
                 #for u in users:
                 #    os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
                 print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
-                + "\nConnect with %smanage.py connect" % bcolors.OKBLUE
+                + "\nConnect with %smanage.py connect" % bcolors.OKBLUE+bcolors.ENDC
                 #write screenname with pid out to bukkitmanger.conf
                 screen_child.close(False) #close without killing screen
                 break
