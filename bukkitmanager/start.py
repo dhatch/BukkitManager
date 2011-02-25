@@ -1,11 +1,16 @@
 import optparse
 import os
 import pexpect
+import string as string_tools
 
 def verbose(string):
     global options
     if options.verbose: print string
 
+def printSafeString(string):
+    w = string_tools.printable[:-5]
+    return "".join(c for c in string if c in w)
+    
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -69,28 +74,28 @@ def start(args):
     #begin processing the output from the screen session
     while True:
         try: 
-            i = screen_child.expect(["^.*\[WARNING\].*$", "^*\[SEVERE\]*$","^.*\[INFO\].*$"])
+            i = screen_child.expect(["^.*\[WARNING\].*$", "^.*\[SEVERE\].*$","^.*\[INFO\].*$"])
         except pexpect.EOF, e:
             print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e+bcolors.ENDC
             break
         except pexpect.TIMEOUT:
             pass
             verbose("Read timeout")
-        verbose("Matched: %d, %s" % (i, screen_child.after))
+        verbose("Matched: %d, %s" % (i, printSafeString(screen_child.after)))
         if i == 0:
-            print bcolors.WARNING+screen_child.after+bcolors.ENDC
+            print bcolors.WARNING+printSafeString(screen_child.after)+bcolors.ENDC
             if screen_child.after.find("FAILED TO BIND TO PORT") != -1:
                 print bcolors.FAIL+"Cancelling start attempt...\nA server is already using the configured port. Perhaps try "+bcolors.OKBLUE\
                 +"manage.py stop "+bcolors.ENDC+"or "+bcolors.OKBLUE+"manage.py restart"
                 stop_server()
                 break
         if i == 1:
-            print bcolors.FAIL+screen_child.after+bcolors.ENDC
+            print bcolors.FAIL+printSafeString(screen_child.after)+bcolors.ENDC
             print bcolors.FAIL+"Cancelling start attempt..."+bcolors.ENDC
             stop_server()
             break
         if i == 2:
-            verbose(bcolors.OKBLUE+screen_child.after)
+            verbose(bcolors.OKBLUE+printSafeString(screen_child.after))
             if screen_child.after.find("Preparing level") != -1:
                 print bcolors.OKGREEN+"Server starting... Please wait..."+bcolors.ENDC
             if screen_child.after.find("Done"):
