@@ -69,7 +69,7 @@ def start(args):
     #begin processing the output from the screen session
     while True:
         try: 
-            i = screen_chlid.expect(["[WARNING]", "[SEVERE]","[INFO]"])
+            i = screen_child.expect(["[WARNING]", "[SEVERE]","[INFO]"])
         except pexpect.EOF, e:
             print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e
             break
