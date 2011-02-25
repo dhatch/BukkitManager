@@ -1,6 +1,6 @@
 import optparse
 import os
-import subprocess, select
+import pexpect
 
 def verbose(string):
     global options
@@ -22,8 +22,23 @@ class bcolors:
         self.FAIL = ''
         self.ENDC = ''
 
+def stop_server(args):
+    global server_child
+    server_child.sendline("stop")
+    while True:
+        try:
+            server_child.expect(["[WARNING]|[SEVERE]", "Stopping server", timeout = 5000)
+        except pexpect.EOF:
+            verbose("server successfully stopped")
+            break
+        except pexpect.TIMEOUT:
+            server_child.close()
+            break
+    
+        
 def start(args):
     global options
+    global server_child
     #begin by parsing command line arguments
     #setup the fuckin parser
     parser = optparse.OptionParser(\
@@ -49,44 +64,45 @@ def start(args):
         max_memory = 512
     file_n = args[0]
     verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    screen_start = subprocess.Popen((["screen", "-m","-S",options.screen_name, "java","-Xms%dM" % min_memory,"-Xmx%dM" % max_memory,"-Xincgc","-jar %s" % file_n,"nogui"]),
-    stdout=subprocess.PIPE,\
-    stdin=subprocess.PIPE)
-
+    screen_child = pexpect.spawn("screen",["-m","-S",options.screen_name, "java","-Xms%dM" % min_memory,"-Xmx%dM" % max_memory,"-Xincgc","-jar %s" % file_n,"nogui"])
     verbose("process started")
     #begin processing the output from the screen session
-    stopping = False
-    poll = select.poll()
-    poll.register(screen_start.stdout, select.POLLIN)
-    while screen_start.poll() is None:
-        #read lines
-        line = screen_start.stdout.readline()
-        verbose("Line: %s" % line)
-        if line.find("[WARNING]") != -1:
-            print bcolors.WARNING+line
-            if line == '**** FAILED TO BIND TO PORT!':
-                print bcolors.FAIL+"Cancelling start attempt...\nA server is already using the configured port. Perhaps try manage.py stop"
-                screen_start.stdin.write("stop\n")
-                stopping = True
-            
-        if line.find("[SEVERE]") != -1:
-            print bcolors.FAIL+line
+    while True:
+        try: 
+            i = screen_chlid.expect(["[WARNING]", "[SEVERE]","[INFO]"])
+        except pexpect.EOF, e:
+            print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e
+            break
+        except pexpect.TIMEOUT:
+            pass
+            verbose("Read timeout")
+        verbose("Matched: %d, %s" % (i, screen_child.after))
+        if i == 0:
+            print bcolors.WARNING+screen_child.after
+            if screen_child.after.find("FAILED TO BIND TO PORT") != -1:
+                print bcolors.FAIL+"Cancelling start attempt...\nA server is already using the configured port. Perhaps try "+bcolors.OKBLUE\
+                +"manage.py stop "+bcolors.ENDC+"or "+bcolors.OKBLUE+"manage.py restart"
+                stop_server()
+                break
+        if i == 1:
+            print bcolors.FAIL+screen_child.after
             print bcolors.FAIL+"Cancelling start attempt..."
-            screen_start.stdin.write("stop\n")
-            stopping = True
-        if line.find("Preparing level") != -1:
-            print bcolors.OKBLUE+"Server starting... Please wait..."
-        if line.find("Done") != -1:
-            print bcolors.OKGREEN+"Server up and running. Setting up screen..."
-        
-        
-             
-    #os.system("screen -r %s -X multiuser on" % options.screen_name)
-    #add users to screen
-    #eventually users to add should be read from config
-    #users = ['dhatch', 'pconzone', 'beyring']
-    #for u in users:
-    #    os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
-    print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
-    + "\nConnect with %smanage.py connect" % bcolors.OKBLUE
-    #write screenname with pid out to bukkitmanger.conf
+            stop_server()
+            break
+        if i == 2:
+            verbose(bcolors.OKBLUE+screen_child.after)
+            if screen_child.after.find("Preparing level") != -1:
+                print bcolors.OKGREEN+"Server starting... Please wait..."
+            if screen_child.after.find("Done"):
+                print bcolors.OKGREEN+"Server up and running. Setting up screen..."             
+                #os.system("screen -r %s -X multiuser on" % options.screen_name)
+                #add users to screen
+                #eventually users to add should be read from config
+                #users = ['dhatch', 'pconzone', 'beyring']
+                #for u in users:
+                #    os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
+                print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
+                + "\nConnect with %smanage.py connect" % bcolors.OKBLUE
+                #write screenname with pid out to bukkitmanger.conf
+                screen_child.close(False) #close without killing screen
+                break
