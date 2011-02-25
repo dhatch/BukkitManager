@@ -105,7 +105,7 @@ def start(args):
                 #eventually users to add should be read from config
                 users = ['dhatch', 'pconzone', 'beyring']
                 for u in users:
-                    os.system("screen -r %s -X acladd %s" % (options.screen_name, u))
+                    os.system("screen -r %s -X acladd %s" % (pwd.getpwuid(os.getuid())[0]+"/"+options.screen_name, u))
                 print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
                 + "\nConnect with %smanage.py connect" % bcolors.OKBLUE+bcolors.ENDC
                 #write screenname with pid out to bukkitmanger.conf
