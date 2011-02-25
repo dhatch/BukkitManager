@@ -64,7 +64,7 @@ def start(args):
         max_memory = 512
     file_n = args[0]
     verbose(bcolors.OKGREEN+"Running:"+bcolors.ENDC+" screen -mS %s java -Xms%dM -Xmx%dM -Xincgc -jar %s nogui" % (options.screen_name, min_memory, max_memory, file_n))
-    screen_child = pexpect.spawn("screen",["-m","-S",options.screen_name, "java","-Xms%dM" % min_memory,"-Xmx%dM" % max_memory,"-Xincgc","-jar %s" % file_n,"nogui"])
+    screen_child = pexpect.spawn("screen",["-m","-S",options.screen_name, "java","-Xms%dM" % min_memory,"-Xmx%dM" % max_memory,"-Xincgc","-jar",'%s' % file_n,"nogui"])
     verbose("process started")
     #begin processing the output from the screen session
     while True:
