@@ -1,15 +1,11 @@
 import optparse
 import os
 import pexpect
-import string as string_tools
-
+import re
+import string as stringtools
 def verbose(string):
     global options
     if options.verbose: print string
-
-def printSafeString(string):
-    w = string_tools.printable[:-5]
-    return "".join(c for c in string if c in w)
     
 class bcolors:
     HEADER = '\033[95m'
@@ -27,23 +23,27 @@ class bcolors:
         self.FAIL = ''
         self.ENDC = ''
 
-def stop_server(args):
-    global server_child
-    server_child.sendline("stop")
+def stop_server():
+    global screen_child
+    screen_child.sendline("stop")
     while True:
         try:
-            server_child.expect(["[WARNING]|[SEVERE]", "Stopping server"], timeout = 5000)
+            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 5000)
         except pexpect.EOF:
             verbose("server successfully stopped")
+            screen_child.close()
             break
         except pexpect.TIMEOUT:
-            server_child.close()
+            screen_child.close()
+            verbose("Force closed")
             break
+        verbose("sent stop again")
+        screen_child.sendline("stop")
     
         
 def start(args):
     global options
-    global server_child
+    global screen_child
     #begin by parsing command line arguments
     #setup the fuckin parser
     parser = optparse.OptionParser(\
@@ -74,31 +74,31 @@ def start(args):
     #begin processing the output from the screen session
     while True:
         try: 
-            i = screen_child.expect(["^.*\[WARNING\].*$", "^.*\[SEVERE\].*$","^.*\[INFO\].*$"])
+            i = screen_child.expect(["\d[%s]*\[WARNING\][^\r\n]*" % re.escape(stringtools.printable[:-5]), "\d[%s].*\[SEVERE\][^\r\n]*" % re.escape(stringtools.printable[:-5]),"\d[%s]*\[INFO\][^\r\n]*" % re.escape(stringtools.printable[:-5])])
         except pexpect.EOF, e:
             print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e+bcolors.ENDC
             break
         except pexpect.TIMEOUT:
             pass
             verbose("Read timeout")
-        verbose("Matched: %d, %s" % (i, printSafeString(screen_child.after)))
+        #verbose("Matched: %d, %s" % (i, screen_child.after))
         if i == 0:
-            print bcolors.WARNING+printSafeString(screen_child.after)+bcolors.ENDC
+            print bcolors.WARNING+screen_child.after+bcolors.ENDC
             if screen_child.after.find("FAILED TO BIND TO PORT") != -1:
                 print bcolors.FAIL+"Cancelling start attempt...\nA server is already using the configured port. Perhaps try "+bcolors.OKBLUE\
-                +"manage.py stop "+bcolors.ENDC+"or "+bcolors.OKBLUE+"manage.py restart"
+                +"manage.py stop "+bcolors.ENDC+"or "+bcolors.OKBLUE+"manage.py restart"+bcolors.ENDC
                 stop_server()
                 break
         if i == 1:
-            print bcolors.FAIL+printSafeString(screen_child.after)+bcolors.ENDC
+            print bcolors.FAIL+screen_child.after+bcolors.ENDC
             print bcolors.FAIL+"Cancelling start attempt..."+bcolors.ENDC
             stop_server()
             break
         if i == 2:
-            verbose(bcolors.OKBLUE+printSafeString(screen_child.after))
+            verbose(bcolors.OKBLUE+screen_child.after)
             if screen_child.after.find("Preparing level") != -1:
                 print bcolors.OKGREEN+"Server starting... Please wait..."+bcolors.ENDC
-            if screen_child.after.find("Done"):
+            if screen_child.after.find("Done") != -1:
                 print bcolors.OKGREEN+"Server up and running. Setting up screen..."+bcolors.ENDC            
                 #os.system("screen -r %s -X multiuser on" % options.screen_name)
                 #add users to screen
