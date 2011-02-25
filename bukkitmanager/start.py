@@ -76,7 +76,7 @@ def start(args):
         except pexpect.TIMEOUT:
             pass
             verbose("Read timeout")
-        verbose("Matched: %d, %s, %s" % (i, screen_child.after, screen_child.before))
+        verbose("Matched: %d, %s" % (i, screen_child.after))
         if i == 0:
             print bcolors.WARNING+screen_child.after+bcolors.ENDC
             if screen_child.after.find("FAILED TO BIND TO PORT") != -1:
