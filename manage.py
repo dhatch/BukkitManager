@@ -40,6 +40,7 @@ if len(args) < 1:
     exit()
 
 verbose("Correct number of args supplied")
+verbose("Config Options:\nusers:%s\nname:%s\ntesting:%s" % (bukkitmanager.users, bukkitmanager.name, bukkitmanager.test_server))
 command = args[0]
 if not command in possible_commands:
     print bcolors.FAIL+"Error:"+bcolors.ENDC+" Incorrect command argument."
