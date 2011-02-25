@@ -101,12 +101,12 @@ def start(args):
                 print bcolors.OKGREEN+"Server starting... Please wait..."+bcolors.ENDC
             if screen_child.after.find("Done") != -1:
                 print bcolors.OKGREEN+"Server up and running. Setting up screen..."+bcolors.ENDC            
-                os.system("screen -d %s -X multiuser on" % options.screen_name)
+                os.system("screen -S %s -X multiuser on" % options.screen_name)
                 #add users to screen
                 #eventually users to add should be read from config
                 users = ['dhatch', 'pconzone', 'beyring']
                 for u in users:
-                    os.system("screen -d %s -X acladd %s" % (pwd.getpwuid(os.getuid())[0]+"/"+options.screen_name, u))
+                    os.system("screen -S %s -X acladd %s" % (pwd.getpwuid(os.getuid())[0]+"/"+options.screen_name, u))
                 print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
                 + "\nConnect with %smanage.py connect" % bcolors.OKBLUE+bcolors.ENDC
                 #write screenname with pid out to bukkitmanger.conf
