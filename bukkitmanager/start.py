@@ -27,7 +27,7 @@ def stop_server(args):
     server_child.sendline("stop")
     while True:
         try:
-            server_child.expect(["[WARNING]|[SEVERE]", "Stopping server", timeout = 5000)
+            server_child.expect(["[WARNING]|[SEVERE]", "Stopping server"], timeout = 5000)
         except pexpect.EOF:
             verbose("server successfully stopped")
             break
