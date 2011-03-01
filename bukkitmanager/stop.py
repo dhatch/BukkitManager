@@ -27,7 +27,7 @@ def stop_server():
     screen_child.sendline("stop")
     while True:
         try:
-            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 5000)
+            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 10)
         except pexpect.EOF:
             verbose("server successfully stopped")
             print bcolors.OKGREEN + 'Server stopped' + bcolors.ENDC
@@ -52,7 +52,7 @@ def stop(args):
     (options, args) = parser.parse_args(args)
     screen_child = pexpect.spawn('screen', ['-r', config.readScreenName()])
     try:
-        screen_child.expect('There is no screen', timeout = 500)
+        screen_child.expect('There is no screen', timeout = 0.5)
         print bcolors.FAIL + 'Server not found to be running... try %smanage.py start%s' % (bcolors.OKBLUE, bcolors.ENDC)
     except pexpect.TIMEOUT:
         stop_server()

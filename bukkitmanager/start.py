@@ -31,7 +31,7 @@ def stop_server():
     screen_child.sendline("stop")
     while True:
         try:
-            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 5000)
+            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 10)
         except pexpect.EOF:
             verbose("server successfully stopped")
             screen_child.close()
