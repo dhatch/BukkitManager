@@ -47,7 +47,7 @@ def stop(args):
     #setup the fuckin parser
     parser = optparse.OptionParser(\
         usage=bcolors.OKGREEN+"%prog%s start" % bcolors.ENDC)
-       parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
+    parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
     (options, args) = parser.parse_args(args)
     screen_child = pexpect.spawn('screen', ['-r', config.readScreenName()])
     try:
