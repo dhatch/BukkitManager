@@ -4,6 +4,8 @@ import pexpect
 import re
 import string as stringtools
 import pwd
+import config
+
 def verbose(string):
     global options
     if options.verbose: print string
@@ -105,8 +107,10 @@ def start(args):
                 print bcolors.OKGREEN+"Server up and running. Setting up screen..."+bcolors.ENDC            
                 os.system("screen -S %s -X multiuser on" % options.screen_name)
                 #add users to screen
+                session_name = pwd.getpwuid(os.getuid())[0]+"/"+options.screen_name
+                config.writeScreenName(session_name)
                 for u in config.users:
-                    os.system("screen -S %s -X acladd %s" % (pwd.getpwuid(os.getuid())[0]+"/"+options.screen_name, u))
+                    os.system("screen -S %s -X acladd %s" % (session_name, u))
                 print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
                 + "\nConnect with %smanage.py connect" % bcolors.OKBLUE+bcolors.ENDC
                 #write screenname with pid out to bukkitmanger.conf

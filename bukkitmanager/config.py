@@ -18,3 +18,18 @@ try:
 except IOError:
     #default fall through
     users = ['dhatch','pconzone','beyring']
+
+CONFIG_FILE_NAME = '.bukkitmanager.conf'
+def getConfigHandle(mode = 'r'):
+    return open(os.path.join(sys.path[0],CONFIG_FILE_NAME), mode)
+    
+def writeScreenName(name):
+    fh = getConfigHandle('w+')
+    fh.write(name)
+    fh.close()
+    
+def readScreenName():
+    fh = getConfigHandle()
+    name = fh.readline()
+    fh.close()
+    return name
