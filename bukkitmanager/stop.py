@@ -52,7 +52,7 @@ def stop(args):
     (options, args) = parser.parse_args(args)
     screen_child = pexpect.spawn('screen', ['-r', config.readScreenName()])
     try:
-        server.expect('There is no screen', timeout = 500)
+        screen_child.expect('There is no screen', timeout = 500)
         print bcolors.FAIL + 'Server not found to be running... try %smanage.py start%s' % (bcolors.OKBLUE, bcolors.ENDC)
     except pexpect.TIMEOUT:
         stop_server()
