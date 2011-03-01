@@ -52,7 +52,6 @@ def start(args):
     parser = optparse.OptionParser(\
      usage=bcolors.OKGREEN+"%prog start"+bcolors.ENDC+" [options] FILENAME [min_memory (MB)] [max_memory (MB)]")
     parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
-    #later replace default value here with config
     parser.add_option('-s', '--screen-name', action='store', help='the name of the screen session', default=config.name)
     (options, args) = parser.parse_args(args)
     verbose("Args are: %s " % args)
