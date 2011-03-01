@@ -1,5 +1,6 @@
 import optparse
 import pexpect
+import config
 
 def verbose(string):
     global options
