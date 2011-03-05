@@ -2,6 +2,7 @@ import sys, os.path
 
 #name
 name = sys.path[0].split("/")[-1]
+test_server = None
 #set testing server
 if name.find('test_') == 0:
     test_server = True

@@ -30,14 +30,14 @@ def deploy(args):
         usage=bcolors.OKGREEN+"%prog start" + bcolors.ENDC)
     parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
     (options, args) = parser.parse_args(args)
-    if config.test_server:
+    if not config.test_server:
         print bcolors.FAIL, "Must be used in a test directory.", bcolors.ENDC
         sys.exit()
     else:
         print bcolors.OKGREEN, "Deploying",bcolors.ENDC
         r = os.system("git checkout master")
         if r == 0:
-            r = os.system("git push file://%s" % os.path.join(sys.path[0], name[5:]))
+            r = os.system("git push file://%s master" % os.path.join("/".join(sys.path[0].split("/")[0:-1]), config.name[5:]))
         if r == 0:
             print bcolors.OKGREEN, "Deployed", bcolors.ENDC
         else:
