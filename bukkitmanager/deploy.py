@@ -29,10 +29,16 @@ def deploy(args):
     parser = optparse.OptionParser(\
         usage=bcolors.OKGREEN+"%prog start" + bcolors.ENDC)
     parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
-    parser.add_option('--commit-message', help='set commit message')
-    parser.add_option('-n', '--no-commit', help='don\' commit after the deploy')
     (options, args) = parser.parse_args(args)
     if config.test_server:
         print bcolors.FAIL, "Must be used in a test directory.", bcolors.ENDC
         sys.exit()
-    
+    else:
+        print bcolors.OKGREEN, "Deploying",bcolors.ENDC
+        r = os.system("git checkout master")
+        if r == 0:
+            r = os.system("git push file://%s" % os.path.join(sys.path[0], name[5:]))
+        if r == 0:
+            print bcolors.OKGREEN, "Deployed", bcolors.ENDC
+        else:
+            print bcolors.FAIL, "Error", bcolors.ENDC
