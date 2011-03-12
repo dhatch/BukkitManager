@@ -1,7 +1,4 @@
 import optparse
-from datetime import *
-import sys
-import os.path
 
 class bcolors:
     HEADER = '\033[95m'
