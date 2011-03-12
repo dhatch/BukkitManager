@@ -27,7 +27,7 @@ args = "Null"
 parser.add_option("-v", "--verbose", action = "store_true", help = "print debug data")
 (options, args) = parser.parse_args(args)
 verbose("Args are: %s " % args)
-parser.add_option("-f", "--file-list", action = "store_true", help = "Enter a list of files you want to backup.")
+parser.add_option("-f", "--file-list", action = "store_true", help = "Enter a list of additional files you want to backup.")
 (options, args) = parser.parse_args(args)
 filelist("Args are %s " % args)
 parser.add_option("-l", "--location", action = "store_true", help = "Enter a directory to save the file(s) to.")
