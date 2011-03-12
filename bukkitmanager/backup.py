@@ -23,15 +23,11 @@ def verbose(string):
     global options
     if options.verbose: print string
 
-args = "Null"
-parser.add_option("-v", "--verbose", action = "store_true", help = "print debug data")
-(options, args) = parser.parse_args(args)
-verbose("Args are: %s " % args)
-parser.add_option("-f", "--file-list", action = "store_true", help = "Enter a list of additional files you want to backup.")
-(options, args) = parser.parse_args(args)
-filelist("Args are %s " % args)
-parser.add_option("-l", "--location", action = "store_true", help = "Enter a directory to save the file(s) to.")
-(options, args) = parser.parse_args(args)
-location("Args are %s " % args)
-parser.add_option("-n", "--name", action = "store_true", help = "Enter the name of the file to save as.")
-
+def backup(args):
+    global options
+    parser = optparse.OptionParser(usage="%prog [options] ")
+    parser.add_option("-v", "--verbose", action = "store_true", help = "print debug data")
+    parser.add_option("-f", "--file-list", help = "Enter a list of additional files you want to backup.")
+    parser.add_option("-l", "--location", help = "Enter a directory to save the file(s) to.")
+    (options, args) = parser.parse_args(args)
+    verbose("Args are: %s " % args)
