@@ -1,7 +1,7 @@
 import bukkitmanager
 import optparse
 version = '0.1'
-possible_commands = ['download', 'start', 'stop', 'restart', 'connect', 'deploy']
+possible_commands = ['download', 'start', 'stop', 'restart', 'connect', 'deploy','backup']
 
 def verbose(string):
     global options
