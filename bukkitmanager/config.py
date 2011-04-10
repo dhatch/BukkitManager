@@ -25,8 +25,15 @@ def getConfigHandle(mode = 'r'):
     return open(os.path.join(sys.path[0],CONFIG_FILE_NAME), mode)
     
 def writeScreenName(name):
-    fh = getConfigHandle('w+')
-    fh.write(name)
+    fh = getConfigHandle()
+    contents = fh.readlines()
+    if len(contents) < 1: 
+        contents.append(name)
+    else:
+        contents[0] = name
+    fh.close()
+    fh = getConfigHandle("w+")
+    fh.writelines(contents)      
     fh.close()
     
 def readScreenName():
@@ -34,3 +41,25 @@ def readScreenName():
     name = fh.readline()
     fh.close()
     return name
+    
+def writeStartParams(params):
+    fh = getConfigHandle()
+    contents = fh.readlines()
+    if len(contents) < 2:
+        if len(contents) == 1:
+            contents.append("@".join(params))
+        else:
+            contents.append("temp")
+            contents.append("@".join(params))
+    else:
+        contents[1] = "@".join(params)
+    fh.close()
+    fh = getConfigHandle("w+")
+    fh.writelines(contents)
+    fh.close()
+    
+def readStartParams():
+    fh = getConfigHandle()
+    params = "@".split(fh.readlines()[1])
+    fh.close()
+    return params
