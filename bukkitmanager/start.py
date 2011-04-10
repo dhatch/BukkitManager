@@ -93,11 +93,11 @@ def start(args):
                 +"manage.py stop "+bcolors.ENDC+"or "+bcolors.OKBLUE+"manage.py restart"+bcolors.ENDC
                 stop_server()
                 break
-        if i == 1:
-            print bcolors.FAIL+screen_child.after+bcolors.ENDC
-            print bcolors.FAIL+"Cancelling start attempt..."+bcolors.ENDC
-            stop_server()
-            break
+        #if i == 1:
+        #    print bcolors.FAIL+screen_child.after+bcolors.ENDC
+        #    print bcolors.FAIL+"Cancelling start attempt..."+bcolors.ENDC
+        #    stop_server()
+        #    break
         if i == 2:
             verbose(bcolors.OKBLUE+screen_child.after)
             if screen_child.after.find("Preparing level") != -1:
