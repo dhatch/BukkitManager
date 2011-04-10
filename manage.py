@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import bukkitmanager
 import optparse
 version = '1.0'
