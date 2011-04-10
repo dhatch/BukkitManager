@@ -61,6 +61,6 @@ def writeStartParams(params):
     
 def readStartParams():
     fh = getConfigHandle()
-    params = "@".split(fh.readlines()[1])
+    params = fh.readlines()[1].split("@")
     fh.close()
     return params
