@@ -37,7 +37,7 @@ def restart(args):
         try:
             screen_child.expect("no screen", timeout=3)
         except pexpect.TIMEOUT:
-            stop.stop_server()
+            stop.stop()
             ##SERVER STILL NEEDS RESTARTING HERE (FIRST CONFIG NEEDS TO BE ADVANCED TO STORE THE FILE NAME AND THE START PARAMS OF PREVIOUS START)
             break
         except pexpect.EOF, e:
