@@ -39,7 +39,7 @@ def download(args):
         parser.print_help()
         exit()
     try:
-        tested_url = urllib2.urlopen("http://ci.bukkit.org/job/dev-Bukkit/%d/artifact/target/bukkit-0.0.1-SNAPSHOT.jar" % download_number,None)  
+        tested_url = urllib2.urlopen("http://ci.bukkit.org/job/dev-CraftBukkit/%d/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar" % download_number,None)  
     except urllib2.URLError as details:
         print bcolors.FAIL+"Error:"+bcolors.ENDC,details
         parser.print_help()
