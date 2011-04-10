@@ -1,4 +1,4 @@
-import optparse, config
+import optparse, start, config
 import pexpect
 
 def verbose(string):
@@ -58,6 +58,7 @@ def restart(args):
         except pexpect.TIMEOUT:
             stop_server()
             ##SERVER STILL NEEDS RESTARTING HERE (FIRST CONFIG NEEDS TO BE ADVANCED TO STORE THE FILE NAME AND THE START PARAMS OF PREVIOUS START)
+            start.start(config.readStartParams())
         except pexpect.EOF, e:
             print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e+bcolors.ENDC
             break

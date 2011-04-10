@@ -108,6 +108,7 @@ def start(args):
                 #add users to screen
                 session_name = pwd.getpwuid(os.getuid())[0]+"/"+options.screen_name
                 config.writeScreenName(session_name)
+                config.writeStartParams(args)
                 for u in config.users:
                     os.system("screen -S %s -X acladd %s" % (session_name, u))
                 print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
