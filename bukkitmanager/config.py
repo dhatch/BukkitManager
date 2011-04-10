@@ -25,6 +25,7 @@ def getConfigHandle(mode = 'r'):
     return open(os.path.join(sys.path[0],CONFIG_FILE_NAME), mode)
     
 def writeScreenName(name):
+    name += "\n"
     fh = getConfigHandle()
     contents = fh.readlines()
     if len(contents) < 1: 
