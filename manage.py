@@ -1,6 +1,6 @@
 import bukkitmanager
 import optparse
-version = '0.1'
+version = '1.0'
 possible_commands = ['download', 'start', 'stop', 'restart', 'connect', 'deploy','backup']
 
 def verbose(string):
