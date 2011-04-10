@@ -59,7 +59,7 @@ def backup(args):
 	os.chdir(world_location)
 	#find the current time
 	today = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
-	shutil.copytree("test_world", os.path.join(backup_location,today))
+	shutil.copytree("world", os.path.join(backup_location,today))
 	#ZIP IT UP BITCH
 	os.chdir(backup_location)
 	#YEA MAN
