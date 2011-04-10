@@ -4,6 +4,7 @@ import sys
 import os
 import datetime
 import zipfile
+import config
 
 class bcolors:
 	HEADER = '\033[95m'
@@ -57,6 +58,9 @@ def backup(args):
 	backup_location = os.path.join(world_location,"backups","world")
 	# change the dir to find the world dir
 	os.chdir(world_location)
+	##SAVE
+	os.system("screen -r %s -X stuff \"save-all $(echo -ne '\\r')\"" % config.readScreenName())
+	os.system("screen -r %s -X stuff \"save-off $(echo -ne '\\r')\"" % config.readScreenName())
 	#find the current time
 	today = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
 	shutil.copytree("world", os.path.join(backup_location,today))
@@ -65,6 +69,7 @@ def backup(args):
 	#YEA MAN
 	zipper(today,today+".zip")
 	shutil.rmtree(today)
+	os.system("screen -r %s -X stuff \"save-on $(echo -ne '\\r')\"" % config.readScreenName())
 	print bcolors.OKGREEN + "Backup Done!" + bcolors.ENDC
 if __name__ == "__main__":
 	backup(sys.argv)
