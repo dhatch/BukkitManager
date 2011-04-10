@@ -1,4 +1,4 @@
-import optparse, start, config
+import optparse, stop, start, config
 import pexpect
 
 def verbose(string):
@@ -19,26 +19,7 @@ class bcolors:
         self.OKGREEN = ''
         self.WARNING = ''
         self.FAIL = ''
-        self.ENDC = ''
-
-def stop_server():
-    global screen_child
-    screen_child.sendline("stop")
-    while True:
-        try:
-            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 10)
-        except pexpect.EOF:
-            verbose("server successfully stopped")
-            print bcolors.OKGREEN + 'Server stopped' + bcolors.ENDC
-            screen_child.close()
-            break
-        except pexpect.TIMEOUT:
-            screen_child.close()
-            print bcolors.WARNING + 'Server force closed' + bcolors.ENDC
-            verbose("Force closed")
-            break
-        verbose("sent stop again")
-        screen_child.sendline("stop")      
+        self.ENDC = ''     
           
 def restart(args):
     global options
@@ -56,9 +37,10 @@ def restart(args):
         try:
             screen_child.expect("no screen", timeout=3)
         except pexpect.TIMEOUT:
-            stop_server()
+            stop.stop_server()
             ##SERVER STILL NEEDS RESTARTING HERE (FIRST CONFIG NEEDS TO BE ADVANCED TO STORE THE FILE NAME AND THE START PARAMS OF PREVIOUS START)
-            start.start(config.readStartParams())
+            break
         except pexpect.EOF, e:
             print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e+bcolors.ENDC
             break
+        start.start(config.readStartParams())
