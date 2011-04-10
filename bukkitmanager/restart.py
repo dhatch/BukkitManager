@@ -22,6 +22,7 @@ class bcolors:
         self.ENDC = ''     
           
 def restart(args):
+    global options
     #begin by parsing command line arguments
     #setup the fuckin parser
     parser = optparse.OptionParser(\
