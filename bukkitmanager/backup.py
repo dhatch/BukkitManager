@@ -44,8 +44,6 @@ def backup(args):
 	global options
 	parser = optparse.OptionParser(usage="%prog [options] ")
 	parser.add_option("-v", "--verbose", action = "store_true", help = "print debug data")
-	parser.add_option("-f", "--file-list", help = "Enter a list of additional files you want to backup.")
-	parser.add_option("-l", "--location", help = "Enter a directory to save the file(s) to.")
 	(options, args) = parser.parse_args(args)
 	verbose("Args are: %s " % args)
 	## setting up the location for the world file to be saved to
@@ -61,7 +59,6 @@ def backup(args):
 	os.chdir(world_location)
 	#find the current time
 	today = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
-	print today
 	shutil.copytree("test_world", os.path.join(backup_location,today))
 	#ZIP IT UP BITCH
 	os.chdir(backup_location)
