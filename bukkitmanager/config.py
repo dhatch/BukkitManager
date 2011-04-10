@@ -18,7 +18,7 @@ try:
     ops_file.close()
 except IOError:
     #default fall through
-    users = ['dhatch','pconzone','beyring']
+    users = ['dhatch','pconzone','beyring','minecraft']
 
 CONFIG_FILE_NAME = '.bukkitmanager.conf'
 def getConfigHandle(mode = 'r'):
@@ -39,7 +39,7 @@ def writeScreenName(name):
     
 def readScreenName():
     fh = getConfigHandle()
-    name = fh.readline()
+    name = fh.readline().strip()
     fh.close()
     return name
     

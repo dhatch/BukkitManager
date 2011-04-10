@@ -1,6 +1,7 @@
 import optparse
 import pexpect
 import config
+import sys
 
 def verbose(string):
     global options
@@ -50,9 +51,10 @@ def stop(args):
         usage=bcolors.OKGREEN+"%prog start" + bcolors.ENDC)
     parser.add_option('-v', '--verbose', action='store_true', help='print debug data')
     (options, args) = parser.parse_args(args)
+    verbose("Attempting to stop "+config.readScreenName())
     screen_child = pexpect.spawn('screen', ['-r', config.readScreenName()])
     try:
-        screen_child.expect('There is no screen', timeout = 0.5)
+        screen_child.expect('There is no screen', timeout = 1)
         print bcolors.FAIL + 'Server not found to be running... try %smanage.py start%s' % (bcolors.OKBLUE, bcolors.ENDC)
     except pexpect.TIMEOUT:
         stop_server()
