@@ -50,9 +50,9 @@ def backup(args):
 	
 	# split the list into strings
 	location = sys.path[0].split("/")
-	del location[-1]
 	# create a seperate path for finding the world file
 	world_location = "/".join(location)
+	verbose("world folder in:"+world_location)
 	# make the strings back into a list for location to save the backup world
 	backup_location = os.path.join(world_location,"backups","world")
 	# change the dir to find the world dir
@@ -64,6 +64,7 @@ def backup(args):
 	os.chdir(backup_location)
 	#YEA MAN
 	zipper(today,today+".zip")
-	
+	shutil.rmtree(today)
+	print bcolors.OKGREEN + "Backup Done!" + bcolors.ENDC
 if __name__ == "__main__":
 	backup(sys.argv)
