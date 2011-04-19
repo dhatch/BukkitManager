@@ -61,12 +61,12 @@ def start(args):
         exit()
     ##READY TO START SERVER
     try:
-        min_memory = args[1]
-    except IndexError:
+        min_memory = int(args[1])
+    except IndexError, ValueError:
         min_memory = 512
     try:
-        max_memory = args[2]
-    except IndexError:
+        max_memory = int(args[2])
+    except IndexError, ValueError:
         if config.test_server:
             max_memory = 512
         else: 
