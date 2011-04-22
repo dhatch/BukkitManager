@@ -14,7 +14,7 @@ users = list()
 try:
     ops_file = open(os.path.join(sys.path[0],'ops.txt'), 'r')
     for line in ops_file:
-        users += line
+        users.append(line.strip())
     ops_file.close()
 except IOError:
     #default fall through

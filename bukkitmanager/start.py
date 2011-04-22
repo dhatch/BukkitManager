@@ -109,8 +109,10 @@ def start(args):
                 session_name = pwd.getpwuid(os.getuid())[0]+"/"+options.screen_name
                 config.writeScreenName(session_name)
                 config.writeStartParams(args)
+                verbose("config.users is %s" % config.users)
                 for u in config.users:
                     os.system("screen -S %s -X acladd %s" % (session_name, u))
+                    verbose("added %s to %s" % (u, session_name))
                 print bcolors.OKGREEN+"Started sucessfully with session name %s%s%s!" % (bcolors.OKBLUE, options.screen_name, bcolors.OKGREEN)+bcolors.ENDC\
                 + "\nConnect with %smanage.py connect" % bcolors.OKBLUE+bcolors.ENDC
                 #write screenname with pid out to bukkitmanger.conf
