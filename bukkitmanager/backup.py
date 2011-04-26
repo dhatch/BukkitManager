@@ -60,9 +60,9 @@ def backup(args):
 	os.chdir(world_location)
 	##SAVE
 	os.system("screen -r %s -X stuff \"save-all $(echo -ne '\\r')\"" % config.readScreenName())
-	time.wait(3)
+	time.sleep(3)
 	os.system("screen -r %s -X stuff \"save-off $(echo -ne '\\r')\"" % config.readScreenName())
-	time.wait(1)
+	time.sleep(1)
 	#find the current time
 	today = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
 	shutil.copytree("world", os.path.join(backup_location,today))
@@ -71,7 +71,7 @@ def backup(args):
 	#YEA MAN
 	zipper(today,today+".zip")
 	shutil.rmtree(today)
-	time.wait(1)
+	time.sleep(1)
 	os.system("screen -r %s -X stuff \"save-on $(echo -ne '\\r')\"" % config.readScreenName())
 	print bcolors.OKGREEN + "Backup Done!" + bcolors.ENDC
 if __name__ == "__main__":
