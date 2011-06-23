@@ -83,7 +83,6 @@ def start(args):
             print bcolors.FAIL + "Process unexpectedly terminated\n%s" % e+bcolors.ENDC
             break
         except pexpect.TIMEOUT:
-            pass
             verbose("Read timeout")
         #verbose("Matched: %d, %s" % (i, screen_child.after))
         if i == 0:
