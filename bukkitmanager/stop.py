@@ -26,21 +26,24 @@ class bcolors:
 def stop_server():
     global screen_child
     screen_child.sendline("stop")
+    stop_attempts = 1
     while True:
         try:
-            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 10)
+            screen_child.expect(["[WARNING]|[SEVERE]", "Exception"], timeout = 5)
         except pexpect.EOF:
             verbose("server successfully stopped")
             print bcolors.OKGREEN + 'Server stopped' + bcolors.ENDC
             screen_child.close()
             break
         except pexpect.TIMEOUT:
-            screen_child.close()
-            print bcolors.WARNING + 'Server force closed' + bcolors.ENDC
-            verbose("Force closed")
-            break
+            if stop_attempts > 4:
+                screen_child.close()
+                print bcolors.WARNING + 'Server force closed' + bcolors.ENDC
+                verbose("Force closed")
+                break
         verbose("sent stop again")
         screen_child.sendline("stop")
+        stop_attempts += 1
 
 def stop(args):
     global options
