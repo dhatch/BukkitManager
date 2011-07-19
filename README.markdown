@@ -12,7 +12,8 @@ A lightweight python module designed to make managing a CraftBukkit Minecraft se
 
 ##Usage
 
-```Usage: manage.py [options] [download | start | stop | restart | connect | deploy]
+```
+Usage: manage.py [options] [download | start | stop | restart | connect | deploy]
 
 Used to manage bukkit server. Relies on bukkitmanage.conf file for some
 settings.
