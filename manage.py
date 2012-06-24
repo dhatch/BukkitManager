@@ -25,7 +25,7 @@ class bcolors:
         self.ENDC = ''
 
 #begin by parsing command line arguments
-#setup the fuckin parser
+#setup the parser
 parser = optparse.OptionParser(\
  usage=bcolors.OKGREEN+"%prog"+bcolors.ENDC+" [options] [download | start | stop | restart | connect | deploy]",\
  description = 'Used to manage bukkit server. Relies on bukkitmanage.conf file for some settings.',\
